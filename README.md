@@ -16,13 +16,13 @@ Forked from [simple-peer](https://github.com/feross/simple-peer) and rewritten i
 ## Install
 
 ```
-npm install peer-pressure
+npm install @d-buckner/peer-pressure
 ```
 
 ## Usage
 
 ```js
-import Peer from 'peer-pressure'
+import Peer from '@d-buckner/peer-pressure'
 
 const peer1 = new Peer({ initiator: true })
 const peer2 = new Peer()
@@ -140,7 +140,7 @@ event on the stream.
 Detect native WebRTC support in the javascript environment.
 
 ```js
-import Peer from 'peer-pressure'
+import Peer from '@d-buckner/peer-pressure'
 
 if (Peer.WEBRTC_SUPPORT) {
   // webrtc support!
