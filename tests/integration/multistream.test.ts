@@ -1,13 +1,9 @@
-import { describe, it, expect, beforeAll, afterEach } from 'vitest'
-import { loadPeer } from '../helpers/loadPeer.js'
-import { waitForEvent, setupSignaling, waitForConnect, destroyPeers, getMediaStream } from '../helpers/peerHelpers.js'
+import { describe, it, expect, afterEach } from 'vitest'
+import Peer from '../../dist/peer-pressure.js'
+import { waitForEvent, setupSignaling, waitForConnect, destroyPeers, getMediaStream } from '../helpers/peerHelpers'
 
-let Peer
-const peersToCleanup = []
+const peersToCleanup: Peer[] = []
 
-beforeAll(async () => {
-  Peer = await loadPeer()
-})
 
 afterEach(() => {
   destroyPeers(...peersToCleanup)
@@ -25,19 +21,19 @@ describe('Multistream Tests', () => {
 
     setupSignaling(peer1, peer2)
 
-    const receivedIds = {}
+    const receivedIds: Record<string, boolean> = {}
     let peer1StreamCount = 0
     let peer2StreamCount = 0
 
-    const streamPromise = new Promise((resolve) => {
-      peer1.on('stream', (stream) => {
+    const streamPromise = new Promise<void>((resolve) => {
+      peer1.on('stream', (stream: MediaStream) => {
         expect(receivedIds[stream.id]).toBeUndefined()
         receivedIds[stream.id] = true
         peer1StreamCount++
         if (peer1StreamCount === 10 && peer2StreamCount === 10) resolve()
       })
 
-      peer2.on('stream', (stream) => {
+      peer2.on('stream', (stream: MediaStream) => {
         expect(receivedIds[stream.id]).toBeUndefined()
         receivedIds[stream.id] = true
         peer2StreamCount++
@@ -60,19 +56,19 @@ describe('Multistream Tests', () => {
 
     setupSignaling(peer1, peer2)
 
-    const receivedIds = {}
+    const receivedIds: Record<string, boolean> = {}
     let peer1TrackCount = 0
     let peer2TrackCount = 0
 
-    const trackPromise = new Promise((resolve) => {
-      peer1.on('track', (track) => {
+    const trackPromise = new Promise<void>((resolve) => {
+      peer1.on('track', (track: MediaStreamTrack) => {
         expect(receivedIds[track.id]).toBeUndefined()
         receivedIds[track.id] = true
         peer1TrackCount++
         if (peer1TrackCount === 10 && peer2TrackCount === 10) resolve()
       })
 
-      peer2.on('track', (track) => {
+      peer2.on('track', (track: MediaStreamTrack) => {
         expect(receivedIds[track.id]).toBeUndefined()
         receivedIds[track.id] = true
         peer2TrackCount++
@@ -93,21 +89,21 @@ describe('Multistream Tests', () => {
     peersToCleanup.push(peer1, peer2)
 
     let transceiverRequestCount = 0
-    const receivedIds = {}
+    const receivedIds: Record<string, boolean> = {}
     let streamCount = 0
 
-    const streamPromise = new Promise((resolve) => {
-      peer1.on('signal', (data) => {
+    const streamPromise = new Promise<void>((resolve) => {
+      peer1.on('signal', (data: any) => {
         if (data.transceiverRequest) transceiverRequestCount++
         if (!peer2.destroyed) peer2.signal(data)
       })
 
-      peer2.on('signal', (data) => {
+      peer2.on('signal', (data: any) => {
         if (data.transceiverRequest) transceiverRequestCount++
         if (!peer1.destroyed) peer1.signal(data)
       })
 
-      peer1.on('stream', (stream) => {
+      peer1.on('stream', (stream: MediaStream) => {
         expect(receivedIds[stream.id]).toBeUndefined()
         receivedIds[stream.id] = true
         streamCount++
@@ -146,11 +142,11 @@ describe('Multistream Tests', () => {
 
     setupSignaling(peer1, peer2)
 
-    const receivedIds = {}
+    const receivedIds: Record<string, boolean> = {}
     let peer1StreamCount = 0
     let peer2StreamCount = 0
 
-    const streamPromise = new Promise((resolve) => {
+    const streamPromise = new Promise<void>((resolve) => {
       peer1.on('connect', () => {
         peer1.addStream(getMediaStream())
       })
@@ -159,7 +155,7 @@ describe('Multistream Tests', () => {
         peer2.addStream(getMediaStream())
       })
 
-      peer1.on('stream', (stream) => {
+      peer1.on('stream', (stream: MediaStream) => {
         expect(receivedIds[stream.id]).toBeUndefined()
         receivedIds[stream.id] = true
         peer1StreamCount++
@@ -169,7 +165,7 @@ describe('Multistream Tests', () => {
         if (peer1StreamCount === 5 && peer2StreamCount === 5) resolve()
       })
 
-      peer2.on('stream', (stream) => {
+      peer2.on('stream', (stream: MediaStream) => {
         expect(receivedIds[stream.id]).toBeUndefined()
         receivedIds[stream.id] = true
         peer2StreamCount++
@@ -192,11 +188,11 @@ describe('Multistream Tests', () => {
 
     setupSignaling(peer1, peer2)
 
-    const receivedIds = {}
+    const receivedIds: Record<string, boolean> = {}
     let peer1TrackCount = 0
     let peer2TrackCount = 0
 
-    const trackPromise = new Promise((resolve) => {
+    const trackPromise = new Promise<void>((resolve) => {
       peer1.on('connect', () => {
         peer1.addStream(getMediaStream())
       })
@@ -205,7 +201,7 @@ describe('Multistream Tests', () => {
         peer2.addStream(getMediaStream())
       })
 
-      peer1.on('track', (track) => {
+      peer1.on('track', (track: MediaStreamTrack) => {
         expect(receivedIds[track.id]).toBeUndefined()
         receivedIds[track.id] = true
         peer1TrackCount++
@@ -215,7 +211,7 @@ describe('Multistream Tests', () => {
         if (peer1TrackCount === 10 && peer2TrackCount === 10) resolve()
       })
 
-      peer2.on('track', (track) => {
+      peer2.on('track', (track: MediaStreamTrack) => {
         expect(receivedIds[track.id]).toBeUndefined()
         receivedIds[track.id] = true
         peer2TrackCount++
@@ -238,17 +234,17 @@ describe('Multistream Tests', () => {
 
     setupSignaling(peer1, peer2)
 
-    const receivedIds = {}
+    const receivedIds: Record<string, boolean> = {}
     let streamCount = 0
     let connected = false
 
-    const streamPromise = new Promise((resolve) => {
+    const streamPromise = new Promise<void>((resolve) => {
       peer2.on('connect', () => {
         connected = true
         peer2.addStream(getMediaStream())
       })
 
-      peer1.on('stream', (stream) => {
+      peer1.on('stream', (stream: MediaStream) => {
         expect(receivedIds[stream.id]).toBeUndefined()
         receivedIds[stream.id] = true
         streamCount++
@@ -272,17 +268,17 @@ describe('Multistream Tests', () => {
 
     setupSignaling(peer1, peer2)
 
-    const receivedIds = {}
+    const receivedIds: Record<string, boolean> = {}
     let trackCount = 0
     let connected = false
 
-    const trackPromise = new Promise((resolve) => {
+    const trackPromise = new Promise<void>((resolve) => {
       peer2.on('connect', () => {
         connected = true
         peer2.addStream(getMediaStream())
       })
 
-      peer1.on('track', (track) => {
+      peer1.on('track', (track: MediaStreamTrack) => {
         expect(receivedIds[track.id]).toBeUndefined()
         receivedIds[track.id] = true
         trackCount++
@@ -310,7 +306,7 @@ describe('Multistream Tests', () => {
 
     let streamReceivedCount = 0
 
-    const streamPromise = new Promise((resolve) => {
+    const streamPromise = new Promise<void>((resolve) => {
       peer1.on('stream', () => {
         streamReceivedCount++
         if (streamReceivedCount === 1) {
@@ -372,12 +368,12 @@ describe('Multistream Tests', () => {
     let peer1TrackReceived = false
     let peer2TrackReceived = false
 
-    peer1.on('track', (track, stream) => {
+    peer1.on('track', (_track: MediaStreamTrack, _stream: MediaStream) => {
       peer1TrackReceived = true
       peer2.replaceTrack(stream2.getTracks()[0], null, stream2)
     })
 
-    peer2.on('track', (track, stream) => {
+    peer2.on('track', (_track: MediaStreamTrack, _stream: MediaStream) => {
       peer2TrackReceived = true
       peer1.replaceTrack(stream1.getTracks()[0], null, stream1)
     })

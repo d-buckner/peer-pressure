@@ -1,13 +1,8 @@
-import { describe, it, expect, beforeAll, afterEach } from 'vitest'
-import { loadPeer } from '../helpers/loadPeer.js'
-import { waitForEvent, setupSignaling, waitForConnect, destroyPeers } from '../helpers/peerHelpers.js'
+import { describe, it, afterEach } from 'vitest'
+import Peer from '../../dist/peer-pressure.js'
+import { waitForEvent, setupSignaling, waitForConnect, destroyPeers } from '../helpers/peerHelpers'
 
-let Peer
-const peersToCleanup = []
-
-beforeAll(async () => {
-  Peer = await loadPeer()
-})
+const peersToCleanup: Peer[] = []
 
 afterEach(() => {
   destroyPeers(...peersToCleanup)

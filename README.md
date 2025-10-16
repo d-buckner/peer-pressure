@@ -6,7 +6,7 @@ Forked from [simple-peer](https://github.com/feross/simple-peer) and rewritten i
 
 ## Features
 
-- **80% smaller bundle** - 5.6 KB gzipped vs 28.4 KB for simple-peer
+- **79% smaller bundle** - 6.1 KB gzipped vs 28.4 KB for simple-peer
 - **Zero runtime dependencies** - uses browser-native APIs
 - **Full TypeScript support** - complete type definitions included
 - **Modular architecture** - signaling, ICE, data-channel, media, stats modules

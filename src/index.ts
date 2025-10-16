@@ -3,7 +3,7 @@
  * Browser-only, zero-dependency WebRTC library
  */
 
-export { Peer } from './peer'
+export { default } from './peer'
 export type {
   PeerOptions,
   SignalData,

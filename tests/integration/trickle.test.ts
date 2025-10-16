@@ -1,13 +1,9 @@
-import { describe, it, expect, beforeAll, afterEach } from 'vitest'
-import { loadPeer } from '../helpers/loadPeer.js'
-import { setupSignaling, waitForConnect, destroyPeers } from '../helpers/peerHelpers.js'
+import { describe, it, expect, afterEach } from 'vitest'
+import Peer from '../../dist/peer-pressure.js'
+import { setupSignaling, waitForConnect, destroyPeers } from '../helpers/peerHelpers'
 
-let Peer
-const peersToCleanup = []
+const peersToCleanup: Peer[] = []
 
-beforeAll(async () => {
-  Peer = await loadPeer()
-})
 
 afterEach(() => {
   destroyPeers(...peersToCleanup)
@@ -23,12 +19,12 @@ describe('Trickle ICE Tests', () => {
     let numSignal1 = 0
     let numSignal2 = 0
 
-    peer1.on('signal', (data) => {
+    peer1.on('signal', (data: any) => {
       numSignal1++
       peer2.signal(data)
     })
 
-    peer2.on('signal', (data) => {
+    peer2.on('signal', (data: any) => {
       numSignal2++
       peer1.signal(data)
     })
@@ -49,12 +45,12 @@ describe('Trickle ICE Tests', () => {
     let numSignal1 = 0
     let numSignal2 = 0
 
-    peer1.on('signal', (data) => {
+    peer1.on('signal', (data: any) => {
       numSignal1++
       peer2.signal(data)
     })
 
-    peer2.on('signal', (data) => {
+    peer2.on('signal', (data: any) => {
       numSignal2++
       peer1.signal(data)
     })
@@ -73,12 +69,12 @@ describe('Trickle ICE Tests', () => {
     let numSignal1 = 0
     let numSignal2 = 0
 
-    peer1.on('signal', (data) => {
+    peer1.on('signal', (data: any) => {
       numSignal1++
       peer2.signal(data)
     })
 
-    peer2.on('signal', (data) => {
+    peer2.on('signal', (data: any) => {
       numSignal2++
       peer1.signal(data)
     })
@@ -95,7 +91,7 @@ describe('Trickle ICE Tests', () => {
     peersToCleanup.push(peer1, peer2)
 
     let endCandidateSent = false
-    function endToNull(data) {
+    function endToNull(data: any) {
       if (data.candidate && !data.candidate.candidate) {
         data.candidate.candidate = null
         endCandidateSent = true
@@ -107,8 +103,8 @@ describe('Trickle ICE Tests', () => {
     peer1.on('error', () => { errorThrown = true })
     peer2.on('error', () => { errorThrown = true })
 
-    peer1.on('signal', (data) => peer2.signal(endToNull(data)))
-    peer2.on('signal', (data) => peer1.signal(endToNull(data)))
+    peer1.on('signal', (data: any) => peer2.signal(endToNull(data)))
+    peer2.on('signal', (data: any) => peer1.signal(endToNull(data)))
 
     await waitForConnect(peer1, peer2)
 
@@ -126,7 +122,7 @@ describe('Trickle ICE Tests', () => {
     peersToCleanup.push(peer1, peer2)
 
     let endCandidateSent = false
-    function endToEmptyString(data) {
+    function endToEmptyString(data: any) {
       if (data.candidate && !data.candidate.candidate) {
         data.candidate.candidate = ''
         endCandidateSent = true
@@ -138,8 +134,8 @@ describe('Trickle ICE Tests', () => {
     peer1.on('error', () => { errorThrown = true })
     peer2.on('error', () => { errorThrown = true })
 
-    peer1.on('signal', (data) => peer2.signal(endToEmptyString(data)))
-    peer2.on('signal', (data) => peer1.signal(endToEmptyString(data)))
+    peer1.on('signal', (data: any) => peer2.signal(endToEmptyString(data)))
+    peer2.on('signal', (data: any) => peer1.signal(endToEmptyString(data)))
 
     await waitForConnect(peer1, peer2)
 
@@ -179,16 +175,16 @@ describe('Trickle ICE Tests', () => {
     const peer2 = new Peer()
     peersToCleanup.push(peer1, peer2)
 
-    const signalQueue1 = []
-    peer1.on('signal', (data) => {
+    const signalQueue1: any[] = []
+    peer1.on('signal', (data: any) => {
       signalQueue1.push(data)
       if (data.candidate) {
         while (signalQueue1[0]) peer2.signal(signalQueue1.pop())
       }
     })
 
-    const signalQueue2 = []
-    peer2.on('signal', (data) => {
+    const signalQueue2: any[] = []
+    peer2.on('signal', (data: any) => {
       signalQueue2.push(data)
       if (data.candidate) {
         while (signalQueue2[0]) peer1.signal(signalQueue2.pop())

@@ -154,6 +154,8 @@ export interface PeerEvents {
   iceTimeout: () => void
   signalingStateChange: (state: RTCSignalingState) => void
   negotiated: () => void
+  finish: () => void // Internal event for cleanup
+  [key: string]: (...args: any[]) => void // Allow dynamic event names
 }
 
 /**

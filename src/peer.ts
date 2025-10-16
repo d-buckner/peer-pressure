@@ -9,7 +9,7 @@ import { DataChannelManager } from './data-channel'
 import { MediaManager } from './media'
 import { StatsManager } from './stats'
 import { randomBytes, toHex, debug } from './utils'
-import type { PeerOptions, SignalData, AddressInfo, GetStatsCallback } from './types'
+import type { PeerOptions, SignalData, AddressInfo, GetStatsCallback, PeerEvents } from './types'
 import type { PeerContext } from './peer-context'
 
 const ICECOMPLETE_TIMEOUT = 5 * 1000
@@ -24,7 +24,7 @@ function getBrowserRTC() {
   }
 }
 
-export class Peer extends EventEmitter implements PeerContext {
+export default class Peer extends EventEmitter<PeerEvents> implements PeerContext {
   // Static properties
   static WEBRTC_SUPPORT = !!getBrowserRTC()
   static config: RTCConfiguration = {

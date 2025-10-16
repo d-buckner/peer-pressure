@@ -1,7 +1,7 @@
 {
   "name": "@d-buckner/peer-pressure",
   "description": "Simple one-to-one WebRTC video/voice and data channels",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "Daniel Buckner",
     "url": "https://d-buckner.org"
@@ -33,14 +33,15 @@
     "browser"
   ],
   "license": "MIT",
-  "main": "dist/peer-pressure.umd.js",
-  "module": "dist/peer-pressure.es.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/peer-pressure.js",
+  "module": "./dist/peer-pressure.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/peer-pressure.es.js",
-      "require": "./dist/peer-pressure.umd.js"
+      "import": "./dist/peer-pressure.js",
+      "default": "./dist/peer-pressure.js"
     }
   },
   "files": [
@@ -53,9 +54,11 @@
   },
   "scripts": {
     "build": "vite build",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:ui": "vitest --ui",
-    "test:coverage": "vitest run --coverage"
+    "typecheck": "tsc --noEmit && tsc --project tsconfig.tests.json --noEmit",
+    "pretest": "npm run build",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "test:watch": "vitest"
   }
 }

@@ -1,13 +1,8 @@
-import { describe, it, expect, beforeAll, afterEach } from 'vitest'
-import { loadPeer } from '../helpers/loadPeer.js'
-import { waitForEvent, setupSignaling, waitForConnect, createConnectedPeers, destroyPeers } from '../helpers/peerHelpers.js'
+import { describe, it, expect, afterEach } from 'vitest'
+import Peer from '../../dist/peer-pressure.js'
+import { waitForEvent, setupSignaling, waitForConnect, createConnectedPeers, destroyPeers } from '../helpers/peerHelpers'
 
-let Peer
-const peersToCleanup = []
-
-beforeAll(async () => {
-  Peer = await loadPeer()
-})
+const peersToCleanup: Peer[] = []
 
 afterEach(() => {
   destroyPeers(...peersToCleanup)
@@ -26,7 +21,13 @@ describe('Basic Peer Tests', () => {
   })
 
   it('should detect error when RTCPeerConnection throws', async () => {
-    const peer = new Peer({ wrtc: { RTCPeerConnection: null } })
+    const peer = new Peer({
+      wrtc: {
+        RTCPeerConnection: null as unknown as typeof RTCPeerConnection,
+        RTCSessionDescription,
+        RTCIceCandidate
+      }
+    })
     peersToCleanup.push(peer)
 
     await waitForEvent(peer, 'error')
@@ -71,7 +72,7 @@ describe('Basic Peer Tests', () => {
 
   it('should call sdpTransform function', async () => {
     let transformCalled = false
-    const sdpTransform = (sdp) => {
+    const sdpTransform = (sdp: string): string => {
       expect(typeof sdp).toBe('string')
       transformCalled = true
       return sdp
@@ -89,15 +90,13 @@ describe('Basic Peer Tests', () => {
   })
 
   it('should use old constraint formats', async () => {
-    const constraints = {
-      mandatory: {
-        OfferToReceiveAudio: true,
-        OfferToReceiveVideo: true
-      }
+    const constraints: RTCOfferOptions = {
+      offerToReceiveAudio: true,
+      offerToReceiveVideo: true
     }
 
-    const peer1 = new Peer({ initiator: true, constraints })
-    const peer2 = new Peer({ constraints })
+    const peer1 = new Peer({ initiator: true, offerOptions: constraints })
+    const peer2 = new Peer({ answerOptions: constraints })
     peersToCleanup.push(peer1, peer2)
 
     setupSignaling(peer1, peer2)
@@ -106,13 +105,13 @@ describe('Basic Peer Tests', () => {
   }, 15000)
 
   it('should use new constraint formats', async () => {
-    const constraints = {
+    const constraints: RTCOfferOptions = {
       offerToReceiveAudio: true,
       offerToReceiveVideo: true
     }
 
-    const peer1 = new Peer({ initiator: true, constraints })
-    const peer2 = new Peer({ constraints })
+    const peer1 = new Peer({ initiator: true, offerOptions: constraints })
+    const peer2 = new Peer({ answerOptions: constraints })
     peersToCleanup.push(peer1, peer2)
 
     setupSignaling(peer1, peer2)
@@ -124,7 +123,7 @@ describe('Basic Peer Tests', () => {
     const peer = new Peer({ initiator: true })
     peersToCleanup.push(peer)
 
-    const iceStateChanged = await waitForEvent(peer, 'iceStateChange')
-    expect(iceStateChanged).toBeDefined()
+    const iceState = await waitForEvent(peer, 'iceStateChange')
+    expect(iceState).toBeDefined()
   })
 })
