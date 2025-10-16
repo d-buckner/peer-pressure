@@ -178,9 +178,3 @@ Peer connection closed.
 ### `peer.on('error', (err) => {})`
 
 Fatal error occurred.
-
-## License
-
-MIT. Copyright (c) [Daniel Buckner](https://d-buckner.org).
-
-Forked from [simple-peer](https://github.com/feross/simple-peer) by Feross Aboukhadijeh.
