@@ -4,10 +4,12 @@ export default defineConfig({
   test: {
     browser: {
       enabled: true,
-      name: 'chromium',
       provider: 'playwright',
       headless: true,
-      screenshotFailures: false
+      screenshotFailures: false,
+      instances: [
+        { browser: 'chromium' }
+      ]
     },
     globals: true,
     coverage: {
